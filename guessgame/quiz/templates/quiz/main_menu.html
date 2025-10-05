@@ -2,12 +2,11 @@
 {% block title %}Головне меню{% endblock %}
 {% block content %}
 <h2>Ласкаво просимо, {{ user.login }}</h2>
-<a href="{% url 'login' %}">Увійти</a>
 <ul>
     <li><a href="#">Стартувати нову вікторину</a></li>
     <li><a href="#">Мої результати</a></li>
     <li><a href="#">Топ-20 гравців</a></li>
-    <li><a href="#">Змінити налаштування</a></li>
+    <li><a href="{% url 'edit_profile' %}">Змінити налаштування</a></li>
     <li><a href="{% url 'logout' %}">Вийти</a></li>
 </ul>
 {% endblock %}

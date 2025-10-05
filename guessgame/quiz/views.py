@@ -7,7 +7,7 @@ from .models import SimpleUser
 
 def show_login(request):
     if request.method == "POST":
-        entered_login = sha256(request.POST.get("login", "").encode()).hexdigest()
+        entered_login = request.POST.get("login", "")
         entered_password = sha256(request.POST.get("password", "").encode()).hexdigest()
 
         try:
@@ -54,4 +54,23 @@ def main_menu(request):
 def logout_view(request):
     request.session.flush()
     return redirect("login")
+
+def edit_profile(request):
+    user = SimpleUser.objects.get(id=request.session['user_id'])
+
+    if request.method == "POST":
+        new_password = request.POST.get("password", "")
+        new_birthdate = request.POST.get("birthdate", "")
+
+        if new_password:
+            user.password = sha256(new_password.encode()).hexdigest()
+
+        if new_birthdate:
+            user.birthdate = new_birthdate
+
+        user.save()
+        messages.success(request, "Ваші дані успішно оновлено!")
+        return redirect("main_menu")
+
+    return render(request, "quiz/edit_profile.html", {"user": user})
 

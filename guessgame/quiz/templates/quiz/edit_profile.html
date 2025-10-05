@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+{% block title %}Редагування профілю{% endblock %}
+{% block content %}
+<h2>Редагувати профіль</h2>
+<form method="post">{% csrf_token %}
+    <label>Новий пароль:</label>
+    <input type="password" name="password" placeholder="Залиште порожнім, якщо не змінювати">
+    <br><br>
+    <label>Нова дата народження:</label>
+    <input type="date" name="birthdate" value="{{ user.birthdate }}">
+    <br><br>
+    <button type="submit">Зберегти зміни</button>
+</form>
+<a href="{% url 'main_menu' %}">Повернутися в меню</a>
+{% endblock %}
