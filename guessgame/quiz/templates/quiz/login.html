@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block title %}Вхід{% endblock %}
+{% block content %}
+<h2>Вхід до Вікторини</h2>
+<form method="post">{% csrf_token %}
+    <input name="login" type="text" placeholder="Логін" required>
+    <input name="password" type="password" placeholder="Пароль" required>
+    <button type="submit">Увійти</button>
+</form>
+
+<p>Немає акаунта? <a href="{% url 'register' %}">Зареєструватися</a></p>
+{% endblock %}
