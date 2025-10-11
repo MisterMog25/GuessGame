@@ -4,7 +4,7 @@
 <h2>Редагувати профіль</h2>
 <form method="post">{% csrf_token %}
     <label>Новий пароль:</label>
-    <input type="password" name="password" placeholder="Залиште порожнім, якщо не змінювати">
+    <input type="password" name="password" placeholder="Залиште порожнім, якщо не змінювати" style="width: 300px;">
     <br><br>
     <label>Нова дата народження:</label>
     <input type="date" name="birthdate" value="{{ user.birthdate }}">

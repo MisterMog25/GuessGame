@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block title %}Мої результати{% endblock %}
+{% block content %}
+
+<h2>Фільтрувати мої результати за категоріями:</h2>
+<form method="POST">
+  {% csrf_token %}
+  <label><input type="checkbox" name="categories" value="math"> Математика</label>
+  <label><input type="checkbox" name="categories" value="chemistry"> Хімія</label>
+  <label><input type="checkbox" name="categories" value="english"> Англійська</label>
+  <button type="submit">ОК</button>
+</form>
+
+{% if results %}
+    <h3>Мої результати:</h3>
+    <ol>
+      {% for r in results %}
+        <li>{{ r.categories|join:", " }} - {{ r.score }} балів</li>
+      {% endfor %}
+    </ol>
+{% endif %}
+
+{% endblock %}

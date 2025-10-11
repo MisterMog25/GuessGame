@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+{% extends "layout.html" %}
+{% block title %}Головне меню{% endblock %}
+{% block content %}
+<h2>Ласкаво просимо, {{ mod_name }}</h2>
+<ul>
+    <li>Coming soon...</li>
+    <li><a href="{% url 'logout_m' %}">Вийти</a></li>
+</ul>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+{% block title %}Тест{% endblock %}
+{% block content %}
+<h1>Ваш результат: {{ score }}</h1>
+<h2>Top-20 Best result Quizers категорії {{ categories|join:", " }}:</h2>
+<ol>
+  {% for i in top_players %}
+    <li>{{i.user_login}} - {{i.score}} балів</li>
+  {% endfor %}
+</ol>
+<a href="{% url 'main_menu' %}">На головну сторінку</a>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block title %}Тест{% endblock %}
+{% block content %}
+<h4>Питання №{{q_number}}</h4>
+<h2>{{ question.question }}</h2>
+<form method="POST">{% csrf_token %}
+  <label><input type="checkbox" name="options" value="1">{{ question.first_option }}</label>
+  <label><input type="checkbox" name="options" value="2">{{ question.second_option }}</label>
+  <label><input type="checkbox" name="options" value="3">{{ question.third_option }}</label>
+  <label><input type="checkbox" name="options" value="4">{{ question.fourth_option }}</label>
+  <button type="submit">Відповісти</button>
+</form>
+
+{% endblock %}
