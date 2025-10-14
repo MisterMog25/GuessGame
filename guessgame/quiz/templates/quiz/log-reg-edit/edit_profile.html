@@ -1,15 +1,87 @@
 {% extends "layout.html" %}
 {% block title %}Редагування профілю{% endblock %}
+
 {% block content %}
 <h2>Редагувати профіль</h2>
-<form method="post">{% csrf_token %}
-    <label>Новий пароль:</label>
-    <input type="password" name="password" placeholder="Залиште порожнім, якщо не змінювати" style="width: 300px;">
-    <br><br>
-    <label>Нова дата народження:</label>
+<form method="post" class="login-form">{% csrf_token %}
+    <input type="password" name="password" placeholder="Новий пароль (залиште порожнім, якщо не змінювати)">
     <input type="date" name="birthdate" value="{{ user.birthdate }}">
-    <br><br>
     <button type="submit">Зберегти зміни</button>
 </form>
-<a href="{% url 'main_menu' %}">Повернутися в меню</a>
+
+<a href="{% url 'main_menu' %}" class="back-btn">Повернутися в меню</a>
+
+<style>
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    width: 300px;
+    transition: transform 0.3s ease;
+    margin: 0 auto 20px auto;
+}
+
+.login-form:hover {
+    transform: translateY(-5px);
+}
+
+.login-form input {
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.login-form input:focus {
+    border-color: #6c63ff;
+    box-shadow: 0 0 5px rgba(108, 99, 255, 0.5);
+    outline: none;
+}
+
+.login-form button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #6c63ff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.login-form button:hover {
+    background-color: #5952d4;
+    transform: scale(1.05);
+}
+
+.back-btn {
+    display: block;
+    width: 300px;
+    text-align: center;
+    margin: 0 auto;
+    padding: 12px;
+    background-color: #ccc;
+    color: #333;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.back-btn:hover {
+    background-color: #bbb;
+    transform: scale(1.02);
+    color: #000;
+}
+</style>
 {% endblock %}

@@ -1,12 +1,52 @@
 {% extends "layout.html" %}
 {% block title %}Головне меню{% endblock %}
+
 {% block content %}
 <h2>Ласкаво просимо, {{ user.login }}</h2>
-<ul>
+<ul class="menu-list">
     <li><a href="{% url 'choose_quiz' %}">Стартувати нову вікторину</a></li>
-    <li><a href="{% url 'my_results' %}">Мої результати</a></li>
+    <li><a href="{% url 'show_my_results' %}">Мої результати</a></li>
     <li><a href="{% url 'edit_profile' %}">Змінити налаштування</a></li>
     <li><a href="{% url 'logout' %}">Вийти</a></li>
     <li><a href="{% url 'login_m' %}">Сторінка адміністратора</a></li>
 </ul>
+
+<style>
+h2 {
+    color: #333;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.menu-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+.menu-list li {
+    width: 250px;
+}
+
+.menu-list a {
+    display: block;
+    text-decoration: none;
+    padding: 12px 20px;
+    background-color: #6c63ff;
+    color: white;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.menu-list a:hover {
+    background-color: #5952d4;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+</style>
 {% endblock %}

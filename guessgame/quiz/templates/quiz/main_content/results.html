@@ -1,12 +1,133 @@
 {% extends "layout.html" %}
-{% block title %}Тест{% endblock %}
+{% block title %}Результати{% endblock %}
+
 {% block content %}
-<h1>Ваш результат: {{ score }}</h1>
-<h2>Top-20 Best result Quizers категорії {{ categories|join:", " }}:</h2>
-<ol>
-  {% for i in top_players %}
-    <li>{{i.user_login}} - {{i.score}} балів</li>
-  {% endfor %}
-</ol>
-<a href="{% url 'main_menu' %}">На головну сторінку</a>
+
+<div class="result-card">
+  <h1>Ваш результат: {{ score }} / {{ total_questions }}</h1>
+
+  {% if is_mixed %}
+    <h2>Вікторина: {{ quiz_title }}</h2>
+    <p class="info-text">Це була змішана вікторина - результат не зберігається в таблиці лідерів.</p>
+  {% else %}
+    <h2>Top-20 гравців вікторини "{{ quiz_title }}":</h2>
+
+    {% if top_players %}
+    <ol class="top-players">
+      {% for player in top_players %}
+        <li class="{% if player.user_login == user_login %}current-user{% endif %}">
+          <span class="player-name">{{ player.user_login }}</span> -
+          <span class="player-score">{{ player.score }} балів</span>
+          {% if player.user_login == user_login %}
+            <strong>(Ви)</strong>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ol>
+    {% else %}
+      <p>Поки що немає результатів для цієї вікторини.</p>
+    {% endif %}
+  {% endif %}
+
+  <div class="buttons">
+    <a href="{% url 'choose_quiz' %}" class="quiz-btn">Пройти іншу вікторину</a>
+    <a href="{% url 'main_menu' %}" class="back-btn">На головну сторінку</a>
+  </div>
+</div>
+
+<style>
+.result-card {
+    background-color: #fff;
+    max-width: 650px;
+    margin: 0 auto 30px auto;
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+h1, h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.info-text {
+    color: #555;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.top-players {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 20px;
+}
+
+.top-players li {
+    display: flex;
+    justify-content: space-between;
+    background-color: #f5f5f5;
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.top-players li:hover {
+    background-color: #e0e0ff;
+    transform: translateY(-2px);
+}
+
+.top-players li.current-user {
+    background-color: #d3c6ff;
+    font-weight: bold;
+}
+
+.player-name {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.player-score {
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.quiz-btn, .back-btn {
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.quiz-btn {
+    background-color: #6c63ff;
+    color: white;
+}
+
+.quiz-btn:hover {
+    background-color: #5952d4;
+    transform: scale(1.05);
+}
+
+.back-btn {
+    background-color: #ccc;
+    color: #333;
+}
+
+.back-btn:hover {
+    background-color: #bbb;
+    transform: scale(1.02);
+    color: #000;
+}
+</style>
+
 {% endblock %}

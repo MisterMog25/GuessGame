@@ -1,9 +1,91 @@
 {% extends "layout.html" %}
-{% block title %}Головне меню{% endblock %}
+{% block title %}Адмін панель{% endblock %}
+
 {% block content %}
-<h2>Ласкаво просимо, {{ mod_name }}</h2>
-<ul>
-    <li>Coming soon...</li>
-    <li><a href="{% url 'logout_m' %}">Вийти</a></li>
-</ul>
+
+<h1 style="text-align:center; margin-bottom:30px;">Панель Керування</h1>
+
+<div style="text-align:center; margin-bottom:20px;">
+    <a href="{% url 'add_quiz' %}" class="btn btn-primary">Додати нову вікторину</a>
+</div>
+
+<h2>Всі вікторини:</h2>
+
+{% if quizzes %}
+<div class="quiz-grid">
+    {% for quiz in quizzes %}
+    <div class="quiz-card">
+        <h3>{{ quiz.title }}</h3>
+        {% if quiz.description %}
+        <p class="quiz-desc">{{ quiz.description }}</p>
+        {% endif %}
+        <p>Питань: {{ quiz.questions.count }}</p>
+        <div class="quiz-actions">
+            <a href="{% url 'view_question' quiz.id %}" class="btn btn-success btn-sm">Питання</a>
+            <a href="{% url 'delete_quiz' quiz.id %}" onclick="return confirm('Видалити вікторину?')" class="btn btn-danger btn-sm">Видалити</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p>Немає вікторин.</p>
+{% endif %}
+
+<div style="text-align:center; margin-top:20px;">
+    <a href="{% url 'main_menu' %}" class="btn btn-secondary">На головну</a>
+</div>
+
+<style>
+.quiz-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.quiz-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    width: calc(33% - 20px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.quiz-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+.quiz-desc {
+    color: #555;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.quiz-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.quiz-actions a {
+    flex: 1;
+    text-align: center;
+}
+
+@media (max-width: 992px) {
+    .quiz-card {
+        width: calc(50% - 20px);
+    }
+}
+
+@media (max-width: 600px) {
+    .quiz-card {
+        width: 100%;
+    }
+}
+</style>
+
 {% endblock %}

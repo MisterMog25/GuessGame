@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+{% block title %}Додати вікторину{% endblock %}
+
+{% block content %}
+
+<h1 style="text-align:center; margin-bottom:25px;">Додати нову вікторину</h1>
+
+<div class="quiz-card">
+    <form method="POST" class="quiz-form">
+        {% csrf_token %}
+
+        <label>Назва:</label>
+        <input type="text" name="title" placeholder="Назва вікторини" required>
+
+        <label>Опис:</label>
+        <textarea name="description" rows="3" placeholder="Короткий опис (необов'язково)"></textarea>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Додати</button>
+            <a href="{% url 'main_page_m' %}" class="btn btn-secondary">Скасувати</a>
+        </div>
+    </form>
+</div>
+
+<style>
+.quiz-card {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.quiz-card:hover {
+    transform: translateY(-5px);
+}
+
+.quiz-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.quiz-form input[type="text"],
+.quiz-form textarea {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.quiz-form input[type="text"]:focus,
+.quiz-form textarea:focus {
+    border-color: #6c63ff;
+    box-shadow: 0 0 5px rgba(108,99,255,0.5);
+    outline: none;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-primary {
+    background-color: #6c63ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #5952d4;
+    transform: scale(1.05);
+}
+
+.btn-secondary {
+    background-color: #ccc;
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #bbb;
+    transform: scale(1.02);
+}
+</style>
+
+{% endblock %}

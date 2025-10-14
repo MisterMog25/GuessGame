@@ -1,0 +1,115 @@
+{% extends "layout.html" %}
+{% block title %}Питання{% endblock %}
+
+{% block content %}
+
+<h1 style="text-align:center; margin-bottom:25px;">Питання вікторини "{{ quiz.title }}"</h1>
+
+<div style="text-align:center; margin-bottom:20px;">
+    <a href="{% url 'add_question' quiz.id %}" class="btn btn-primary">➕ Додати питання</a>
+</div>
+
+{% if questions %}
+<div class="questions-grid">
+    {% for q in questions %}
+    <div class="question-card">
+        <p><strong>{{ q.question }}</strong></p>
+        <ul class="options-list">
+            <li>{{ q.first_option }} {% if 0 in q.correct_options %}✅{% endif %}</li>
+            <li>{{ q.second_option }} {% if 1 in q.correct_options %}✅{% endif %}</li>
+            <li>{{ q.third_option }} {% if 2 in q.correct_options %}✅{% endif %}</li>
+            <li>{{ q.fourth_option }} {% if 3 in q.correct_options %}✅{% endif %}</li>
+        </ul>
+        <div class="question-actions">
+            <a href="{% url 'edit_question' quiz.id q.id %}" class="btn btn-success btn-sm">Редагувати</a>
+            <a href="{% url 'delete_question' q.id %}" onclick="return confirm('Видалити питання?')" class="btn btn-danger btn-sm">Видалити</a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p style="text-align:center;">Немає питань.</p>
+{% endif %}
+
+<div style="text-align:center; margin-top:20px;">
+    <a href="{% url 'main_page_m' %}" class="btn btn-secondary">Назад до панелі</a>
+</div>
+
+<style>
+.questions-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.question-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    width: calc(50% - 20px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.question-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+.options-list {
+    padding-left: 20px;
+    margin-bottom: 15px;
+    color: #555;
+}
+
+.question-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.question-actions a {
+    flex: 1;
+    text-align: center;
+    text-decoration: none;
+}
+
+@media (max-width: 992px) {
+    .question-card {
+        width: 100%;
+    }
+}
+
+.btn-primary {
+    background-color: #6c63ff;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 20px;
+    text-decoration: none;
+}
+
+.btn-success {
+    background-color: #28a745;
+    color: white;
+    border-radius: 6px;
+    padding: 6px 12px;
+    text-decoration: none;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    border-radius: 6px;
+    padding: 6px 12px;
+    text-decoration: none;
+}
+
+.btn-secondary {
+    background-color: #ccc;
+    color: #333;
+    border-radius: 8px;
+    padding: 10px 20px;
+    text-decoration: none;
+}
+</style>
+
+{% endblock %}

@@ -1,23 +1,140 @@
 {% extends "layout.html" %}
 {% block title %}Мої результати{% endblock %}
+
 {% block content %}
 
-<h2>Фільтрувати мої результати за категоріями:</h2>
-<form method="POST">
+<h2>Фільтрувати за вікторинами:</h2>
+<form method="POST" class="filter-form">
   {% csrf_token %}
-  <label><input type="checkbox" name="categories" value="math"> Математика</label>
-  <label><input type="checkbox" name="categories" value="chemistry"> Хімія</label>
-  <label><input type="checkbox" name="categories" value="english"> Англійська</label>
-  <button type="submit">ОК</button>
+  <div class="checkboxes">
+    {% for quiz in all_quizzes %}
+    <label class="checkbox-label">
+      <input type="checkbox" name="quizzes" value="{{ quiz.id }}">
+      {{ quiz.title }}
+    </label>
+    {% endfor %}
+  </div>
+  <button type="submit" class="quiz-btn">ОК</button>
 </form>
 
+<hr>
+
+<h3>Всі результати ({{ results.count }}):</h3>
 {% if results %}
-    <h3>Мої результати:</h3>
-    <ol>
-      {% for r in results %}
-        <li>{{ r.categories|join:", " }} - {{ r.score }} балів</li>
-      {% endfor %}
-    </ol>
+<ol class="results-list">
+  {% for r in results %}
+    <li>
+      <span class="quiz-name">{{ r.quiz.title }}</span> -
+      <span class="score">{{ r.score }}/20 балів</span> -
+      <span class="date">{{ r.date_taken|date:"d.m.Y H:i" }}</span>
+    </li>
+  {% endfor %}
+</ol>
+{% else %}
+<p>Результатів не знайдено.</p>
 {% endif %}
+
+<a href="{% url 'main_menu' %}" class="back-btn">На головну сторінку</a>
+
+<style>
+h2, h3 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.filter-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+}
+
+.checkbox-label {
+    background-color: #f5f5f5;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.checkbox-label:hover {
+    background-color: #e0e0ff;
+}
+
+.results-list {
+    max-width: 600px;
+    margin: 0 auto 20px auto;
+    padding-left: 20px;
+}
+
+.results-list li {
+    background-color: #f9f9f9;
+    margin-bottom: 8px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.results-list li:hover {
+    background-color: #e0e0ff;
+    transform: translateY(-2px);
+}
+
+.quiz-name {
+    flex-grow: 1;
+    font-weight: bold;
+}
+
+.score, .date {
+    margin-left: 10px;
+}
+
+.quiz-btn {
+    padding: 12px 20px;
+    background-color: #6c63ff;
+    color: white;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.quiz-btn:hover {
+    background-color: #5952d4;
+    transform: scale(1.05);
+}
+
+.back-btn {
+    display: block;
+    width: 250px;
+    text-align: center;
+    margin: 20px auto 0 auto;
+    padding: 12px;
+    background-color: #ccc;
+    color: #333;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.back-btn:hover {
+    background-color: #bbb;
+    transform: scale(1.02);
+    color: #000;
+}
+</style>
 
 {% endblock %}

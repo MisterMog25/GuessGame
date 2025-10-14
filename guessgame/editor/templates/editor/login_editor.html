@@ -1,10 +1,104 @@
-{% extends "layout_m.html" %}
+{% extends "layout.html" %}
 {% block title %}Вхід{% endblock %}
+
 {% block content %}
-<h2>Вхід до Стоірнки адміна</h2>
-<form method="post">{% csrf_token %}
-    <input name="login" type="text" placeholder="Логін" required>
-    <input name="password" type="password" placeholder="Пароль" required>
-    <button type="submit">Увійти</button>
-</form>
+
+<div class="admin-login-container">
+    <div class="login-card shadow">
+        <h2>Вхід для Адміністратора</h2>
+        <form method="post" class="login-form">
+            {% csrf_token %}
+            <input name="login" type="text" placeholder="Логін" required>
+            <input name="password" type="password" placeholder="Пароль" required>
+            <button type="submit">Увійти</button>
+        </form>
+    </div>
+</div>
+
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.admin-login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.login-card {
+    paddin-top: 20px;
+    background-color: #fff;
+    padding: 40px 35px;
+    border-radius: 15px;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+.admin-logo {
+    width: 80px;
+    margin-bottom: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+    margin-bottom: 25px;
+    color: #333;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.login-form input {
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.login-form input:focus {
+    border-color: #6c63ff;
+    box-shadow: 0 0 8px rgba(108,99,255,0.5);
+    outline: none;
+}
+
+.login-form button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #6c63ff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.login-form button:hover {
+    background-color: #5952d4;
+    transform: scale(1.05);
+}
+</style>
+
 {% endblock %}

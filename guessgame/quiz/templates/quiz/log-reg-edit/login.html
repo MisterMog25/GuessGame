@@ -2,11 +2,73 @@
 {% block title %}Вхід{% endblock %}
 {% block content %}
 <h2>Вхід до Вікторини</h2>
-<form method="post">{% csrf_token %}
+<form method="post" class="login-form">{% csrf_token %}
     <input name="login" type="text" placeholder="Логін" required>
     <input name="password" type="password" placeholder="Пароль" required>
     <button type="submit">Увійти</button>
 </form>
-
 <p>Немає акаунта? <a href="{% url 'register' %}">Зареєструватися</a></p>
+
+<style>
+h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    transition: transform 0.3s ease;
+}
+
+.login-form:hover {
+    transform: translateY(-5px);
+}
+
+.login-form input {
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    transition: all 0.3s ease;
+    font-size: 16px;
+}
+
+.login-form input:focus {
+    border-color: #6c63ff;
+    box-shadow: 0 0 5px rgba(108, 99, 255, 0.5);
+    outline: none;
+}
+
+.login-form button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background-color: #6c63ff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.login-form button:hover {
+    background-color: #5952d4;
+    transform: scale(1.05);
+}
+
+.login-form a {
+    color: #6c63ff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.login-form a:hover {
+    color: #5952d4;
+}
+</style>
 {% endblock %}

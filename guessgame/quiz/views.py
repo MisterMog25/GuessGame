@@ -1,10 +1,9 @@
 import os
 from hashlib import sha256
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from .models import SimpleUser, Question, QuizResult
+from .models import SimpleUser, Question, QuizResult, Quiz
 from random import sample
-
 
 def show_login(request):
     if request.method == "POST":
@@ -44,7 +43,6 @@ def show_register(request):
 
     return render(request, "quiz/log-reg-edit/register.html")
 
-
 def main_menu(request):
     if 'user_id' not in request.session:
         return redirect("login")
@@ -58,6 +56,8 @@ def logout_view(request):
     return redirect("login")
 
 def edit_profile(request):
+    if 'user_id' not in request.session:
+        return redirect("login")
     user = SimpleUser.objects.get(id=request.session['user_id'])
 
     if request.method == "POST":
@@ -76,92 +76,150 @@ def edit_profile(request):
 
     return render(request, "quiz/log-reg-edit/edit_profile.html", {"user": user})
 
-def start_quiz(request):
-    if request.method == "POST":
-        selected_categories = request.POST.getlist("categories")
-        if not selected_categories:
-            messages.error(request, "Оберіть хоча б одну категорію!")
-            return redirect("choose_quiz")
 
-        questions = Question.objects.filter(category__in=selected_categories)
-        questions = list(questions)
-        questions = sample(questions, min(len(questions), 5))
+def choose_quiz(request):
+    if 'user_id' not in request.session:
+        return redirect("login")
 
-        request.session['quiz_questions'] = [q.id for q in questions]
-        request.session['current_question'] = 0
-        request.session['quiz_categories'] = selected_categories
-        request.session['score'] = 0
+    quizzes = Quiz.objects.all()
+    total_questions = Question.objects.count()
+    can_mixed = total_questions >= 20
 
-        return redirect("show_question", q_number=1)
+    return render(request, "quiz/main_content/choose_quiz.html", {
+        "quizzes": quizzes,
+        "can_mixed": can_mixed
+    })
 
-    return render(request, "quiz/main_content/start_new_quiz.html")
+
+def start_quiz(request, quiz_id):
+    quiz = get_object_or_404(Quiz, id=quiz_id)
+    questions = list(quiz.questions.all())
+
+    if len(questions) < 20:
+        return redirect('choose_quiz')
+
+    questions = sample(questions, 20)
+
+    request.session['quiz_questions'] = [q.id for q in questions]
+    request.session['current_index'] = 0
+    request.session['score'] = 0
+    request.session['quiz_id'] = quiz.id
+
+    return redirect('show_question', q_number=1)
+
 
 def show_question(request, q_number):
-    quiz_questions = request.session.get('quiz_questions', [])
-    if not quiz_questions:
-        return redirect("choose_quiz")
+    question_ids = request.session.get('quiz_questions', [])
 
-    if q_number > len(quiz_questions):
-        return redirect("show_results")
+    if q_number - 1 >= len(question_ids):
+        return redirect('show_results')
 
-    question_id = quiz_questions[q_number - 1]
-    question = Question.objects.get(id=question_id)
+    question = get_object_or_404(Question, id=question_ids[q_number - 1])
 
     if request.method == "POST":
-        selected_options = request.POST.getlist("options")
-        correct = set(map(str, question.correct_options))
-        if set(selected_options) == correct:
-            score = request.session.get("score", 0)
-            request.session["score"] = score + 1
-            print(score)
+        selected = request.POST.getlist('options')
+        correct = [str(i) for i in question.correct_options]
 
-        request.session['current_question'] = q_number
-        return redirect("show_question", q_number=q_number + 1)
+        current_score = request.session.get('score', 0)
+        if set(selected) == set(correct):
+            current_score += 1
 
-    return render(request, "quiz/main_content/show_question.html", {"question": question, "q_number": q_number})
+        request.session['score'] = current_score
+        request.session['current_index'] = q_number
+
+        print(f"Score saved to session: {request.session['score']}")
+
+        return redirect('show_question', q_number=q_number + 1)
+
+    return render(request, "quiz/main_content/show_question.html", {
+        "question": question,
+        "q_number": q_number,
+        "total_questions": len(question_ids)
+    })
+
 
 def show_results(request):
-    user_login = request.session.get("user_login", "None")
+    user_login = request.session.get("user_login", "Guest")
     score = request.session.get("score", 0)
-    categories = request.session.get("quiz_categories", [])
+    quiz_id = request.session.get("quiz_id")
+    is_mixed = request.session.get("is_mixed", False)
 
-    QuizResult.objects.create(
-        user_login=user_login,
-        score=score,
-        categories=categories
-    )
+    if not is_mixed and not quiz_id:
+        return redirect('main_menu')
 
-    all_results = QuizResult.objects.all()
+    if is_mixed:
+        quiz_title = "Змішана вікторина"
+        top_players = []
+    else:
+        quiz = get_object_or_404(Quiz, id=quiz_id)
+        quiz_title = quiz.title
 
-    top_players = []
-    user_best_scores = {}
-    for result in all_results:
-        if set(result.categories) == set(categories):
-            key = result.user_login
-            if key not in user_best_scores or result.score > user_best_scores[key].score:
-                user_best_scores[key] = result
+        QuizResult.objects.create(
+            user_login=user_login,
+            quiz=quiz,
+            score=score
+        )
 
-    top_players = sorted(user_best_scores.values(), key=lambda x: x.score, reverse=True)[:20]
+        all_results = QuizResult.objects.filter(quiz=quiz)
+        user_best = {}
 
-    return render(request, "quiz/main_content/results.html", {"score": score, "top_players": top_players, "user_login": user_login, "categories": categories})
+        for result in all_results:
+            if result.user_login not in user_best or result.score > user_best[result.user_login].score:
+                user_best[result.user_login] = result
+
+        top_players = sorted(user_best.values(), key=lambda x: x.score, reverse=True)[:20]
+
+    request.session.pop('quiz_questions', None)
+    request.session.pop('quiz_id', None)
+    request.session.pop('score', None)
+    request.session.pop('current_index', None)
+    request.session.pop('is_mixed', None)
+
+    return render(request, "quiz/main_content/results.html", {
+        "score": score,
+        "total_questions": 20,
+        "top_players": top_players,
+        "quiz_title": quiz_title,
+        "user_login": user_login,
+        "is_mixed": is_mixed
+    })
+
+
+def start_mixed_quiz(request):
+    all_questions = list(Question.objects.all())
+    selected_questions = sample(all_questions, min(len(all_questions), 20))
+
+    request.session['quiz_questions'] = [q.id for q in selected_questions]
+    request.session['current_index'] = 0
+    request.session['score'] = 0
+    request.session['quiz_id'] = None
+    request.session['is_mixed'] = True
+
+    return redirect('show_question', q_number=1)
+
 
 def show_my_results(request):
     user_login = request.session.get("user_login")
-    results = QuizResult.objects.filter(user_login=user_login)
 
-    selected_categories = []
+    if not user_login:
+        return redirect("login")
+
+    all_quizzes = Quiz.objects.all()
+
     if request.method == "POST":
-        selected_categories = request.POST.getlist("categories")
-        if selected_categories:
-            filtered_results = []
-            for result in results:
-                if any(cat in result.categories for cat in selected_categories):
-                    filtered_results.append(result)
-
-            results = sorted(filtered_results, key=lambda x: x.score, reverse=True)
+        selected_quiz_ids = request.POST.getlist("quizzes")
+        if selected_quiz_ids:
+            results = QuizResult.objects.filter(
+                user_login=user_login,
+                quiz_id__in=selected_quiz_ids
+            ).select_related('quiz').order_by('-date_taken')
         else:
-            results = []
+            results = QuizResult.objects.filter(user_login=user_login).select_related('quiz').order_by('-date_taken')
     else:
-        results = []
+        results = QuizResult.objects.filter(user_login=user_login).select_related('quiz').order_by('-date_taken')
 
-    return render(request, "quiz/main_content/show_my_results.html", {"results": results, "selected_categories": selected_categories})
+    return render(request, "quiz/main_content/show_my_results.html", {
+        "all_quizzes": all_quizzes,
+        "results": results
+    })
+

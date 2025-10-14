@@ -1,0 +1,117 @@
+{% extends "layout.html" %}
+{% block title %}Обрати вікторину{% endblock %}
+
+{% block content %}
+<h1>Оберіть вікторину:</h1>
+<div class="grouper">
+  <div class="quiz-table">
+    {% for quiz in quizzes %}
+      <div class="quiz-row">
+        <a href="{% url 'start_quiz' quiz.id %}" class="quiz-btn">{{ quiz.title }}</a>
+        {% if quiz.description %}
+          <span class="quiz-desc">{{ quiz.description }}</span>
+        {% endif %}
+      </div>
+    {% empty %}
+      <p>Немає доступних вікторин.</p>
+    {% endfor %}
+  </div>
+
+  <div class="mixed-div">
+    {% if can_mixed %}
+      <h2>Або спробуйте:</h2>
+      <a href="{% url 'start_mixed_quiz' %}" class="quiz-btn mixed-quiz">
+        🎲 Змішана вікторина (випадкові питання з усіх категорій) 🎲
+      </a>
+    {% else %}
+      <p style="color: gray;">Змішана вікторина недоступна (потрібно мінімум 5 питань)</p>
+    {% endif %}
+  </div>
+</div>
+<a href="{% url 'main_menu' %}" class="back-btn">На головну сторінку</a>
+
+<style>
+h1, h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+.grouper {
+  display: flex;
+}
+.quiz-table {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 25px;
+    width: 80%;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.quiz-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background-color: #fff;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease;
+}
+
+.quiz-row:hover {
+    transform: translateY(-3px);
+}
+
+.quiz-btn {
+    flex-shrink: 0;
+    padding: 10px 18px;
+    background-color: #6c63ff;
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.quiz-btn:hover {
+    background-color: #5952d4;
+    transform: scale(1.05);
+}
+
+.quiz-desc {
+    color: #555;
+    font-size: 15px;
+    flex-grow: 1; /* опис займає весь залишковий простір */
+}
+
+.mixed-quiz {
+    display: block;
+    text-align: center;
+    font-size: 18px;
+    margin: 15px auto;
+    width: 250px;
+}
+
+.back-btn {
+    display: block;
+    width: 250px;
+    text-align: center;
+    margin: 20px auto 0 auto;
+    padding: 12px;
+    background-color: #ccc;
+    color: #333;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.back-btn:hover {
+    background-color: #bbb;
+    transform: scale(1.02);
+    color: #000;
+}
+</style>
+{% endblock %}

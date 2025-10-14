@@ -1,14 +1,104 @@
 {% extends "layout.html" %}
-{% block title %}Тест{% endblock %}
+{% block title %}Питання {{ q_number }}{% endblock %}
+
 {% block content %}
-<h4>Питання №{{q_number}}</h4>
-<h2>{{ question.question }}</h2>
-<form method="POST">{% csrf_token %}
-  <label><input type="checkbox" name="options" value="1">{{ question.first_option }}</label>
-  <label><input type="checkbox" name="options" value="2">{{ question.second_option }}</label>
-  <label><input type="checkbox" name="options" value="3">{{ question.third_option }}</label>
-  <label><input type="checkbox" name="options" value="4">{{ question.fourth_option }}</label>
-  <button type="submit">Відповісти</button>
-</form>
+
+<h2>Питання {{ q_number }} / {{ total_questions }}</h2>
+<div class="question-card">
+  <h3>{{ question.question }}</h3>
+
+  <form method="POST" class="quiz-form">
+    {% csrf_token %}
+    <div class="options">
+      <label class="option-label">
+        <input type="checkbox" name="options" value="0">
+        {{ question.first_option }}
+      </label>
+
+      <label class="option-label">
+        <input type="checkbox" name="options" value="1">
+        {{ question.second_option }}
+      </label>
+
+      <label class="option-label">
+        <input type="checkbox" name="options" value="2">
+        {{ question.third_option }}
+      </label>
+
+      <label class="option-label">
+        <input type="checkbox" name="options" value="3">
+        {{ question.fourth_option }}
+      </label>
+    </div>
+
+    <button type="submit" class="quiz-btn">Наступне питання</button>
+  </form>
+</div>
+
+<style>
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.question-card {
+    background-color: #fff;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.quiz-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.option-label {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.option-label:hover {
+    background-color: #e0e0ff;
+    transform: translateY(-1px);
+}
+
+.option-label input {
+    margin-right: 10px;
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.quiz-btn {
+    padding: 12px 20px;
+    background-color: #6c63ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.quiz-btn:hover {
+    background-color: #5952d4;
+    transform: scale(1.05);
+}
+</style>
 
 {% endblock %}

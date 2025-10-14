@@ -1,0 +1,131 @@
+{% extends "layout.html" %}
+{% block title %}Редагувати питання{% endblock %}
+
+{% block content %}
+
+<h1 style="text-align:center; margin-bottom:25px;">Оновити питання до "{{ quiz.title }}"</h1>
+
+<div class="question-card">
+    <form method="POST" class="question-form">
+        {% csrf_token %}
+        <input type="hidden" name="question_id" value="{{ previous_question.id }}">
+
+        <label>Питання:</label>
+        <textarea name="question" rows="3" required>{{ previous_question.question }}</textarea>
+
+        <label>Варіант 1:</label>
+        <div class="option">
+            <input type="text" name="first_option" value="{{ previous_question.first_option }}" required>
+            <label><input type="checkbox" name="correct_options" value="0" {% if 0 in previous_question.correct_options %}checked{% endif %}> Правильна</label>
+        </div>
+
+        <label>Варіант 2:</label>
+        <div class="option">
+            <input type="text" name="second_option" value="{{ previous_question.second_option }}" required>
+            <label><input type="checkbox" name="correct_options" value="1" {% if 1 in previous_question.correct_options %}checked{% endif %}> Правильна</label>
+        </div>
+
+        <label>Варіант 3:</label>
+        <div class="option">
+            <input type="text" name="third_option" value="{{ previous_question.third_option }}" required>
+            <label><input type="checkbox" name="correct_options" value="2" {% if 2 in previous_question.correct_options %}checked{% endif %}> Правильна</label>
+        </div>
+
+        <label>Варіант 4:</label>
+        <div class="option">
+            <input type="text" name="fourth_option" value="{{ previous_question.fourth_option }}" required>
+            <label><input type="checkbox" name="correct_options" value="3" {% if 3 in previous_question.correct_options %}checked{% endif %}> Правильна</label>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Оновити питання</button>
+            <a href="{% url 'view_question' quiz.id %}" class="btn btn-secondary">Скасувати</a>
+        </div>
+    </form>
+</div>
+
+<style>
+.question-card {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.question-card:hover {
+    transform: translateY(-5px);
+}
+
+.question-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.question-form textarea,
+.question-form input[type="text"] {
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.question-form textarea:focus,
+.question-form input[type="text"]:focus {
+    border-color: #6c63ff;
+    box-shadow: 0 0 5px rgba(108,99,255,0.5);
+    outline: none;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-primary {
+    background-color: #6c63ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #5952d4;
+    transform: scale(1.05);
+}
+
+.btn-secondary {
+    background-color: #ccc;
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-secondary:hover {
+    background-color: #bbb;
+    transform: scale(1.02);
+}
+</style>
+
+{% endblock %}
